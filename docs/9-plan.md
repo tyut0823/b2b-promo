@@ -5,6 +5,7 @@
 | 버전 | 날짜 | 변경 내용 |
 |---|---|---|
 | 0.1 | 2026-08-13 | 최초 작성 |
+| 0.2 | 2026-08-13 | 의존 관계 다이어그램에 Task 명칭 표기 및 레이어별 그룹화 |
 
 ## 1. 개요
 
@@ -18,21 +19,56 @@
 
 ```mermaid
 flowchart LR
-    DB1[DB-1] --> DB2[DB-2] --> DB3[DB-3]
-    BE1[BE-1] --> BE2[BE-2]
+    subgraph DB["데이터베이스"]
+        DB1["DB-1<br/>PostgreSQL 17 환경 준비"]
+        DB2["DB-2<br/>스키마 적용"]
+        DB3["DB-3<br/>초기 데이터 투입"]
+    end
+
+    subgraph BE["백엔드"]
+        BE1["BE-1<br/>백엔드 프로젝트 초기 설정"]
+        BE2["BE-2<br/>DB 연결 및 공통 인프라"]
+        BE3["BE-3<br/>인증 API"]
+        BE4["BE-4<br/>인증·권한 미들웨어"]
+        BE5["BE-5<br/>샘플 API"]
+        BE6["BE-6<br/>신청 API"]
+        BE7["BE-7<br/>마이페이지 API"]
+        BE8["BE-8<br/>통합 테스트"]
+    end
+
+    subgraph FE["프론트엔드"]
+        FE1["FE-1<br/>프론트엔드 프로젝트 초기 설정"]
+        FE2["FE-2<br/>인증 기반 구성"]
+        FE3["FE-3<br/>로그인 / 회원가입 화면"]
+        FE4["FE-4<br/>공용 레이아웃 및 컴포넌트"]
+        FE5["FE-5<br/>샘플 목록 / 상세"]
+        FE6["FE-6<br/>샘플 신청·취소 / 내 신청 내역"]
+        FE7["FE-7<br/>관리자 샘플 관리"]
+        FE8["FE-8<br/>관리자 신청 현황"]
+        FE9["FE-9<br/>마이페이지"]
+        FE10["FE-10<br/>반응형 전체 점검"]
+    end
+
+    DB1 --> DB2 --> DB3
+    BE1 --> BE2
     DB2 --> BE2
-    BE2 --> BE3[BE-3] --> BE4[BE-4]
-    BE4 --> BE5[BE-5] --> BE6[BE-6]
-    BE4 --> BE7[BE-7]
-    BE6 --> BE8[BE-8]
+    BE2 --> BE3 --> BE4
+    BE4 --> BE5 --> BE6
+    BE4 --> BE7
+    BE6 --> BE8
     BE7 --> BE8
-    FE1[FE-1] --> FE2[FE-2] --> FE3[FE-3]
+    FE1 --> FE2 --> FE3
     BE3 --> FE2
-    FE2 --> FE4[FE-4]
-    FE4 --> FE5[FE-5] --> FE6[FE-6]
-    FE4 --> FE7[FE-7] --> FE8[FE-8]
-    FE4 --> FE9[FE-9]
-    FE6 --> FE10[FE-10]
+    FE2 --> FE4
+    FE4 --> FE5 --> FE6
+    FE4 --> FE7 --> FE8
+    FE4 --> FE9
+    BE5 --> FE5
+    BE6 --> FE6
+    BE5 --> FE7
+    BE6 --> FE8
+    BE7 --> FE9
+    FE6 --> FE10
     FE8 --> FE10
     FE9 --> FE10
 ```

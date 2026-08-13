@@ -10,6 +10,7 @@
 | 0.4 | 2026-08-13 | DB-1 완료 조건 체크 (b2b_promo DB 생성, DATABASE_URL 접속 확인) |
 | 0.5 | 2026-08-13 | DB-2 완료 조건 체크 (테이블/제약 생성 확인, migrations 파일 배치, UNIQUE 위반 테스트) |
 | 0.6 | 2026-08-13 | DB-3 완료 조건 체크 (관리자 계정, 신청 예정/가능/종료 샘플 각 1건 삽입) |
+| 0.7 | 2026-08-13 | BE-1 완료 조건 체크 (Express 초기 설정, env 검증, /health, 테스트 9개 통과) |
 
 ## 1. 개요
 
@@ -125,9 +126,9 @@ flowchart LR
   - `config/env.js` 작성 — `DATABASE_URL`, `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `JWT_ACCESS_EXPIRES_IN`, `JWT_REFRESH_EXPIRES_IN`, `PORT` 검증
   - `.env.example` 커밋, `.env`는 `.gitignore` 처리
 - **완료 조건**
-  - [ ] `npm start`로 서버가 기동되고 지정 포트에서 응답한다
-  - [ ] 필수 환경변수를 하나 비우고 기동하면 즉시 종료된다
-  - [ ] `.env`가 git에 추적되지 않고 `.env.example`만 커밋되어 있다
+  - [x] `npm start`로 서버가 기동되고 지정 포트에서 응답한다
+  - [x] 필수 환경변수를 하나 비우고 기동하면 즉시 종료된다
+  - [x] `.env`가 git에 추적되지 않고 `.env.example`만 커밋되어 있다
 
 ### BE-2. DB 연결 및 공통 인프라
 

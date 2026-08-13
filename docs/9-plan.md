@@ -6,6 +6,7 @@
 |---|---|---|
 | 0.1 | 2026-08-13 | 최초 작성 |
 | 0.2 | 2026-08-13 | 의존 관계 다이어그램에 Task 명칭 표기 및 레이어별 그룹화 |
+| 0.3 | 2026-08-13 | BE-6/BE-7 엔드포인트 서술을 swagger.json 기준으로 구체화(PATCH /applications/:id, PUT /users/me/password) |
 
 ## 1. 개요
 
@@ -185,7 +186,7 @@ flowchart LR
 - **선행 Task**: BE-4, BE-5
 - **작업 내용**
   - `POST /applications` — 신청/재신청. `INSERT ... ON CONFLICT (sample_id, user_id) DO UPDATE SET status='APPLIED' WHERE applications.status='CANCELLED'` 단일 UPSERT로 처리
-  - `PATCH /applications/:id` 또는 취소 엔드포인트 — 상태를 `CANCELLED`로 변경(삭제 금지)
+  - `PATCH /applications/:id` — 상태를 `CANCELLED`로 변경(삭제 금지)
   - `GET /applications/me` — 본인 신청 내역 조회
   - `GET /samples/:id/applications` — 관리자 전용 샘플별 신청 현황
   - 신청 시점에 `start_date <= today <= end_date`를 서버에서 재검증
@@ -204,7 +205,7 @@ flowchart LR
 - **작업 내용**
   - `GET /users/me` — 내 정보 조회
   - `PUT /users/me` — 이름, 소속 거래처명 수정
-  - 비밀번호 변경 엔드포인트 — 새 비밀번호를 해시로 저장
+  - `PUT /users/me/password` — 새 비밀번호를 해시로 저장
   - 관리자·거래처 담당자 공통 사용
 - **완료 조건**
   - [ ] 내 정보 조회 응답에 비밀번호 관련 필드가 포함되지 않는다

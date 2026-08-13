@@ -8,6 +8,7 @@
 | 0.2 | 2026-08-13 | 환경변수 항목(DB 접속 정보, JWT 시크릿, 토큰 만료 시간) 구체화 |
 | 0.3 | 2026-08-13 | 프론트엔드 디렉토리 구조에 frontend/ 최상위 폴더 추가 |
 | 0.4 | 2026-08-13 | 신청 유일성 보장 섹션의 컬럼명을 ERD/schema.sql과 일치시킴(buyer_id → user_id) |
+| 0.5 | 2026-08-13 | 환경변수 목록에 `FRONTEND_ORIGIN`(CORS 허용 origin) 추가, 기본 포트 3000 명시 |
 
 이 문서는 `1-domain-definition.md`, `2-usecase.md`, `3-PRD.md`, `4-user-scenario.md`에서 정의한 도메인/요구사항을 실제 코드로 구현할 때 따라야 할 구조·원칙을 정의한다. 3일/1인 개발 규모의 교육용 MVP를 기준으로 하며, 과도한 추상화나 확장성 대비 설계는 의도적으로 배제한다.
 
@@ -88,11 +89,11 @@
   - **DB 접속 정보**: `DATABASE_URL` (PostgreSQL 접속 문자열: host/port/user/password/db명 포함) 형태로 한 번에 관리한다. 개별 변수(`DB_HOST`, `DB_PORT` 등)로 쪼개지 않는다.
   - **JWT 시크릿**: `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`을 access/refresh용으로 분리해서 관리한다(같은 시크릿 재사용 금지 — 하나가 유출돼도 다른 토큰까지 위조되지 않도록).
   - **토큰 만료 시간**: `JWT_ACCESS_EXPIRES_IN`(예: `1h`), `JWT_REFRESH_EXPIRES_IN`(예: `14d`)로 관리해 코드 수정 없이 정책을 조정할 수 있게 한다.
-  - 그 외: `PORT`.
+  - 그 외: `PORT`(기본 3000), `FRONTEND_ORIGIN`(CORS 허용 origin, 프론트 개발 서버 주소).
 - 서버 기동 시 필수 환경변수 누락을 검증하고, 누락 시 즉시 종료한다(런타임 중 undefined로 조용히 실패하지 않게).
 - 비밀번호는 `bcrypt`(또는 Node 내장 `crypto.scrypt`) 중 하나만 선택해 해시로 저장한다. salt rounds는 라이브러리 기본값을 사용한다.
 - JWT는 access token(짧은 만료, `JWT_ACCESS_EXPIRES_IN`)과 refresh token(긴 만료, `JWT_REFRESH_EXPIRES_IN`)을 함께 사용한다. refresh token은 DB 저장 없이 stateless 검증으로 시작한다(블랙리스트/회전 로직은 MVP 범위 밖 — 필요해지면 추가).
-- CORS는 프론트 개발 서버 origin만 명시적으로 허용한다.
+- CORS는 `FRONTEND_ORIGIN` 환경변수에 지정된 프론트 개발 서버 origin만 명시적으로 허용한다(하드코딩 금지).
 - rate limit, API 게이트웨이, 서비스 디스커버리, 분산 트레이싱은 이 규모(단일 Express 서버, 1인 개발)에 불필요하므로 도입하지 않는다.
 - 로깅은 `console.log`/`console.error` 수준으로 충분하다. 구조화 로깅(Winston, correlation ID 등)은 도입하지 않는다.
 - DB 마이그레이션은 SQL 파일을 순서대로 수동 실행한다(마이그레이션 프레임워크 도입은 3일짜리 프로젝트에 과함).

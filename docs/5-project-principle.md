@@ -7,6 +7,7 @@
 | 0.1 | 2026-08-13 | 최초 작성 |
 | 0.2 | 2026-08-13 | 환경변수 항목(DB 접속 정보, JWT 시크릿, 토큰 만료 시간) 구체화 |
 | 0.3 | 2026-08-13 | 프론트엔드 디렉토리 구조에 frontend/ 최상위 폴더 추가 |
+| 0.4 | 2026-08-13 | 신청 유일성 보장 섹션의 컬럼명을 ERD/schema.sql과 일치시킴(buyer_id → user_id) |
 
 이 문서는 `1-domain-definition.md`, `2-usecase.md`, `3-PRD.md`, `4-user-scenario.md`에서 정의한 도메인/요구사항을 실제 코드로 구현할 때 따라야 할 구조·원칙을 정의한다. 3일/1인 개발 규모의 교육용 MVP를 기준으로 하며, 과도한 추상화나 확장성 대비 설계는 의도적으로 배제한다.
 
@@ -44,10 +45,10 @@
 - **controller 책임**: 요청 파싱, 입력 검증(필수값/형식), service 호출, 응답 포맷팅. 비즈니스 로직(신청 유일성, 기간 판정)은 두지 않는다.
 - **service 책임**: 비즈니스 규칙 + DB 트랜잭션. pg client를 직접 사용한다.
 - **신청 유일성 보장(2중 방어)**
-  1. DB: `applications` 테이블에 `UNIQUE (sample_id, buyer_id)` 제약을 건다. 이것이 최종 방어선이다.
-  2. 서비스: `INSERT ... ON CONFLICT (sample_id, buyer_id) DO UPDATE SET status = 'APPLIED' WHERE applications.status = 'CANCELLED'` 형태의 단일 UPSERT로 신청/재신청을 원자적으로 처리한다(2단계 SELECT-후-분기 로직 지양, 레이스 컨디션 방지).
+  1. DB: `applications` 테이블에 `UNIQUE (sample_id, user_id)` 제약을 건다. 이것이 최종 방어선이다.
+  2. 서비스: `INSERT ... ON CONFLICT (sample_id, user_id) DO UPDATE SET status = 'APPLIED' WHERE applications.status = 'CANCELLED'` 형태의 단일 UPSERT로 신청/재신청을 원자적으로 처리한다(2단계 SELECT-후-분기 로직 지양, 레이스 컨디션 방지).
   - 이미 APPLIED 상태에서 재신청 시도는 UPSERT의 `WHERE` 조건에 걸려 갱신되지 않으므로, 갱신 행 수를 확인해 "이미 신청한 샘플입니다" 에러를 반환한다.
-  - 취소는 단순 `UPDATE ... SET status='CANCELLED' WHERE sample_id=$1 AND buyer_id=$2 AND status='APPLIED'`.
+  - 취소는 단순 `UPDATE ... SET status='CANCELLED' WHERE sample_id=$1 AND user_id=$2 AND status='APPLIED'`.
 - **기간 판정**은 목록 조회 시 DB 쿼리(`end_date >= CURRENT_DATE`)로 1차 필터링하고, 신청 시점에 서비스 레벨에서 `start_date <= today <= end_date`를 재검증한다(클라이언트가 보낸 시각을 신뢰하지 않음).
 - **트랜잭션**: 신청/취소는 단일 UPSERT/UPDATE 문으로 원자성이 보장되므로 명시적 `BEGIN/COMMIT`이 필요 없다. 여러 쿼리를 묶어야 하는 경우(현재 MVP엔 없음)에만 `pool.connect()` + `BEGIN/COMMIT/ROLLBACK`을 사용한다.
 - 권한 분리는 `requireRole('ADMIN')` 미들웨어로 라우트 단위에서 차단한다. 서비스 레벨에서 role을 재확인하지 않는다(과잉 방어 지양).

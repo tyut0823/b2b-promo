@@ -7,6 +7,9 @@
 | 0.1 | 2026-08-13 | 최초 작성 |
 | 0.2 | 2026-08-13 | 의존 관계 다이어그램에 Task 명칭 표기 및 레이어별 그룹화 |
 | 0.3 | 2026-08-13 | BE-6/BE-7 엔드포인트 서술을 swagger.json 기준으로 구체화(PATCH /applications/:id, PUT /users/me/password) |
+| 0.4 | 2026-08-13 | DB-1 완료 조건 체크 (b2b_promo DB 생성, DATABASE_URL 접속 확인) |
+| 0.5 | 2026-08-13 | DB-2 완료 조건 체크 (테이블/제약 생성 확인, migrations 파일 배치, UNIQUE 위반 테스트) |
+| 0.6 | 2026-08-13 | DB-3 완료 조건 체크 (관리자 계정, 신청 예정/가능/종료 샘플 각 1건 삽입) |
 
 ## 1. 개요
 
@@ -84,9 +87,9 @@ flowchart LR
   - 프로젝트 전용 데이터베이스와 접속 계정 생성
   - `DATABASE_URL` 접속 문자열 확정 (`5-project-principle.md` 5절 기준)
 - **완료 조건**
-  - [ ] PostgreSQL 17 인스턴스에 접속 가능하다
-  - [ ] 프로젝트 전용 데이터베이스가 생성되어 있다
-  - [ ] `DATABASE_URL` 형태의 접속 문자열로 psql 접속이 성공한다
+  - [x] PostgreSQL 17 인스턴스에 접속 가능하다
+  - [x] 프로젝트 전용 데이터베이스가 생성되어 있다
+  - [x] `DATABASE_URL` 형태의 접속 문자열로 psql 접속이 성공한다
 
 ### DB-2. 스키마 적용
 
@@ -95,10 +98,10 @@ flowchart LR
   - `docs/8-schema.sql`을 대상 데이터베이스에 실행
   - `backend/src/db/migrations/` 아래에 동일 DDL을 순번 파일로 배치(`5-project-principle.md` 7절 구조)
 - **완료 조건**
-  - [ ] `users`, `samples`, `applications` 3개 테이블이 생성되어 있다
-  - [ ] `users.email` UNIQUE, `applications (sample_id, user_id)` UNIQUE 제약이 존재한다
-  - [ ] `account_type`, `status` CHECK 제약과 `end_date >= start_date` CHECK 제약이 존재한다
-  - [ ] 동일 `(sample_id, user_id)`로 INSERT를 2회 시도하면 두 번째가 UNIQUE 위반으로 실패한다
+  - [x] `users`, `samples`, `applications` 3개 테이블이 생성되어 있다
+  - [x] `users.email` UNIQUE, `applications (sample_id, user_id)` UNIQUE 제약이 존재한다
+  - [x] `account_type`, `status` CHECK 제약과 `end_date >= start_date` CHECK 제약이 존재한다
+  - [x] 동일 `(sample_id, user_id)`로 INSERT를 2회 시도하면 두 번째가 UNIQUE 위반으로 실패한다
 
 ### DB-3. 초기 데이터 투입
 
@@ -107,9 +110,9 @@ flowchart LR
   - 관리자 계정 1건 삽입(비밀번호는 해시값으로 저장)
   - 화면 확인용 샘플 데이터 3건 삽입 — 신청 예정(시작일 미래), 신청 가능(기간 내), 신청 종료(종료일 과거) 각 1건
 - **완료 조건**
-  - [ ] `account_type = 'ADMIN'`인 사용자 1건이 존재한다
-  - [ ] `password_hash` 컬럼에 평문이 아닌 해시값이 저장되어 있다
-  - [ ] 신청 예정 / 신청 가능 / 신청 종료 상태로 판정되는 샘플이 각 1건 이상 존재한다
+  - [x] `account_type = 'ADMIN'`인 사용자 1건이 존재한다
+  - [x] `password_hash` 컬럼에 평문이 아닌 해시값이 저장되어 있다
+  - [x] 신청 예정 / 신청 가능 / 신청 종료 상태로 판정되는 샘플이 각 1건 이상 존재한다
 
 ## 4. 백엔드 Task
 

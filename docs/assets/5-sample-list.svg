@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 640" width="360" height="640" font-family="sans-serif">
+  <rect x="0" y="0" width="360" height="640" fill="#ffffff" stroke="#888" stroke-width="2"/>
+
+  <!-- header -->
+  <rect x="0" y="0" width="360" height="56" fill="#f2f2f2" stroke="#888"/>
+  <text x="16" y="34" font-size="18" font-weight="bold" fill="#333">b2b-promo</text>
+  <text x="230" y="24" font-size="11" fill="#333">내 신청내역</text>
+  <text x="250" y="42" font-size="11" fill="#333">마이페이지</text>
+
+  <!-- page title -->
+  <rect x="0" y="56" width="360" height="36" fill="#ffffff" stroke="#ccc"/>
+  <text x="16" y="79" font-size="14" fill="#333">샘플 목록</text>
+
+  <!-- card A -->
+  <g>
+    <rect x="16" y="108" width="328" height="140" fill="#ffffff" stroke="#999"/>
+    <rect x="32" y="124" width="80" height="60" fill="#e0e0e0" stroke="#999"/>
+    <text x="60" y="158" font-size="10" fill="#666">이미지</text>
+    <text x="128" y="140" font-size="14" fill="#333">샘플명 A</text>
+    <text x="128" y="162" font-size="11" fill="#666">신청기간: 08.01 ~ 08.20</text>
+  </g>
+
+  <!-- card B -->
+  <g>
+    <rect x="16" y="264" width="328" height="140" fill="#ffffff" stroke="#999"/>
+    <rect x="32" y="280" width="80" height="60" fill="#e0e0e0" stroke="#999"/>
+    <text x="60" y="314" font-size="10" fill="#666">이미지</text>
+    <text x="128" y="296" font-size="14" fill="#333">샘플명 B</text>
+    <text x="128" y="318" font-size="11" fill="#666">신청기간: 08.15 ~ 08.31</text>
+  </g>
+
+  <!-- card C -->
+  <g>
+    <rect x="16" y="420" width="328" height="140" fill="#ffffff" stroke="#999"/>
+    <rect x="32" y="436" width="80" height="60" fill="#e0e0e0" stroke="#999"/>
+    <text x="60" y="470" font-size="10" fill="#666">이미지</text>
+    <text x="128" y="452" font-size="14" fill="#333">샘플명 C</text>
+    <text x="128" y="474" font-size="11" fill="#666">신청기간: 09.01 ~ 09.10</text>
+  </g>
+
+  <text x="16" y="600" font-size="10" fill="#999">모바일 레이아웃 (360px 기준) — 카드 클릭 시 샘플 상세로 이동</text>
+</svg>

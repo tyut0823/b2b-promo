@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "b2b-promo API",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "식자재 유통 B2B 샘플 신청 웹앱의 백엔드 API. 교육용 바이브코딩 실습 MVP. 9-plan.md 4절(BE-3, BE-5, BE-6, BE-7)에 확정된 엔드포인트만 포함한다."
   },
   "servers": [
@@ -171,6 +171,10 @@
             "description": "로그인 성공, access/refresh token 발급",
             "content": { "application/json": { "schema": { "$ref": "#/components/schemas/TokenPair" } } }
           },
+          "400": {
+            "description": "필수 항목(email, password) 누락",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          },
           "401": {
             "description": "이메일 또는 비밀번호 불일치",
             "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
@@ -207,6 +211,10 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "필수 항목(refresh_token) 누락",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
           },
           "401": {
             "description": "만료되거나 위조된 refresh token",
@@ -247,6 +255,10 @@
           "201": {
             "description": "등록 성공",
             "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Sample" } } }
+          },
+          "400": {
+            "description": "필수 항목(name, start_date, end_date) 누락 또는 end_date가 start_date보다 이전",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
           },
           "401": {
             "description": "인증되지 않음",
@@ -297,6 +309,10 @@
           "200": {
             "description": "수정 성공",
             "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Sample" } } }
+          },
+          "400": {
+            "description": "필수 항목(name, start_date, end_date) 누락 또는 end_date가 start_date보다 이전",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
           },
           "401": {
             "description": "인증되지 않음",
@@ -370,7 +386,7 @@
             "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Application" } } }
           },
           "400": {
-            "description": "신청 시작일 이전이거나 신청 종료일이 경과하여 신청이 거부됨",
+            "description": "필수 항목(sample_id) 누락이거나, 신청 시작일 이전이거나 신청 종료일이 경과하여 신청이 거부됨",
             "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
           },
           "401": {
@@ -420,6 +436,10 @@
             "description": "취소 성공",
             "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Application" } } }
           },
+          "400": {
+            "description": "status 값이 CANCELLED가 아님",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          },
           "401": {
             "description": "인증되지 않음",
             "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
@@ -429,7 +449,7 @@
             "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
           },
           "404": {
-            "description": "신청 내역 없음",
+            "description": "신청 내역 없음 (이미 취소된 경우 포함)",
             "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
           }
         }
@@ -535,7 +555,7 @@
             }
           },
           "400": {
-            "description": "현재 비밀번호 불일치",
+            "description": "필수 항목(current_password, new_password) 누락 또는 현재 비밀번호 불일치",
             "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
           },
           "401": {

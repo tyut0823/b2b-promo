@@ -9,7 +9,11 @@ const REQUIRED_KEYS = [
   'PORT',
 ];
 
-const missing = REQUIRED_KEYS.filter((key) => !process.env[key]);
+function findMissingKeys(env) {
+  return REQUIRED_KEYS.filter((key) => !env[key]);
+}
+
+const missing = findMissingKeys(process.env);
 
 if (missing.length > 0) {
   console.error('[env] 필수 환경변수 누락: ' + missing.join(', '));
@@ -23,4 +27,5 @@ module.exports = {
   JWT_ACCESS_EXPIRES_IN: process.env.JWT_ACCESS_EXPIRES_IN,
   JWT_REFRESH_EXPIRES_IN: process.env.JWT_REFRESH_EXPIRES_IN,
   PORT: Number(process.env.PORT),
+  findMissingKeys,
 };

@@ -9,6 +9,7 @@
 | 0.3 | 2026-08-13 | 프론트엔드 디렉토리 구조에 frontend/ 최상위 폴더 추가 |
 | 0.4 | 2026-08-13 | 신청 유일성 보장 섹션의 컬럼명을 ERD/schema.sql과 일치시킴(buyer_id → user_id) |
 | 0.5 | 2026-08-13 | 환경변수 목록에 `FRONTEND_ORIGIN`(CORS 허용 origin) 추가, 기본 포트 3000 명시 |
+| 0.6 | 2026-08-21 | 7절 백엔드 디렉토리 구조를 실제 구현(routes/controllers/services 파일 목록, tests/ 파일 목록, 존재하지 않는 README.md 제거)에 맞춰 갱신 |
 
 이 문서는 `1-domain-definition.md`, `2-usecase.md`, `3-PRD.md`, `4-user-scenario.md`에서 정의한 도메인/요구사항을 실제 코드로 구현할 때 따라야 할 구조·원칙을 정의한다. 3일/1인 개발 규모의 교육용 MVP를 기준으로 하며, 과도한 추상화나 확장성 대비 설계는 의도적으로 배제한다.
 
@@ -171,8 +172,8 @@ backend/
 │   ├── routes/
 │   │   ├── index.js           # 라우터 등록 집합
 │   │   ├── auth.routes.js     # /auth/signup, /auth/login, /auth/refresh
-│   │   ├── samples.routes.js  # /samples (목록/상세/등록/수정)
-│   │   ├── applications.routes.js # /applications (신청/취소/내 내역/현황)
+│   │   ├── samples.routes.js  # /samples (목록/상세/등록/수정), /samples/:id/applications
+│   │   ├── applications.routes.js # /applications (신청/취소/내 내역)
 │   │   └── users.routes.js    # /users/me (마이페이지)
 │   ├── controllers/
 │   │   ├── auth.controller.js
@@ -190,10 +191,16 @@ backend/
 ├── tests/
 │   ├── applications.test.js   # 신청/취소/재신청/중복/기간 규칙 통합 테스트
 │   ├── auth.test.js
-│   └── samples.test.js
+│   ├── authMiddleware.test.js
+│   ├── samples.test.js
+│   ├── users.test.js
+│   ├── env.test.js
+│   ├── errorHandler.test.js
+│   ├── health.test.js
+│   ├── db-connection.test.js
+│   └── e2e-user-scenario.test.js
 ├── .env.example
-├── package.json
-└── README.md
+└── package.json
 ```
 
 `routes → controllers → services → db` 4단만 사용하고, `repository`/`dto`/`mapper` 등의 추가 레이어는 두지 않는다(pg 쿼리는 service에서 직접 작성). 폴더당 파일 하나가 원칙이며, 기능별로 잘게 쪼개지 않고 엔티티(User/Sample/Application) 단위로 파일을 유지한다.

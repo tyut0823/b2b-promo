@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 640" width="360" height="640" font-family="'Noto Sans KR','Malgun Gothic',sans-serif">
+  <!-- 배경 (--color-bg) -->
+  <rect x="0" y="0" width="360" height="640" fill="#F7F8FA" stroke="#E0E0E0" stroke-width="2"/>
+
+  <!-- 상단 바: 목록으로 -->
+  <rect x="0" y="0" width="360" height="48" fill="#FFFFFF" stroke="#E0E0E0"/>
+  <text x="16" y="30" font-size="15" font-weight="700" fill="#222222">&#8592; 목록으로</text>
+
+  <!-- 샘플 이미지 -->
+  <rect x="16" y="64" width="328" height="180" rx="8" fill="#EAF3EE" stroke="#E0E0E0"/>
+  <text x="180" y="158" font-size="13" fill="#767676" text-anchor="middle">샘플 이미지</text>
+
+  <!-- 본문 카드 -->
+  <rect x="16" y="260" width="328" height="300" rx="8" fill="#FFFFFF" stroke="#E0E0E0"/>
+
+  <!-- 샘플명 (H1) -->
+  <text x="32" y="298" font-size="24" font-weight="700" fill="#222222">마미손 고무장갑 세트</text>
+
+  <!-- 상태 배지: ONGOING -> 신청 가능 (--color-status-ok) -->
+  <circle cx="38" cy="320" r="5" fill="#2E7D32"/>
+  <text x="50" y="325" font-size="13" font-weight="700" fill="#2E7D32">신청 가능</text>
+
+  <!-- 설명 라벨/본문 -->
+  <text x="32" y="356" font-size="13" fill="#767676">설명</text>
+  <text x="32" y="378" font-size="15" fill="#222222">식자재 매장에서 사용하기 좋은</text>
+  <text x="32" y="398" font-size="15" fill="#222222">고무장갑 샘플입니다.</text>
+
+  <!-- 신청 기간 -->
+  <text x="32" y="428" font-size="13" fill="#767676">신청 기간</text>
+  <text x="32" y="450" font-size="15" font-weight="700" fill="#222222">2026.08.01 ~ 2026.08.20</text>
+
+  <!-- 구분선 -->
+  <line x1="32" y1="472" x2="328" y2="472" stroke="#E0E0E0" stroke-width="1"/>
+
+  <!-- Primary 버튼: 신청하기 -->
+  <rect x="32" y="496" width="296" height="44" rx="6" fill="#1B5E42"/>
+  <text x="180" y="523" font-size="15" font-weight="700" fill="#FFFFFF" text-anchor="middle">신청하기</text>
+
+  <text x="16" y="600" font-size="10" fill="#767676">모바일 레이아웃 (360px) — 7-wireframe.md 6절 + 10-style.md 스타일 적용</text>
+</svg>

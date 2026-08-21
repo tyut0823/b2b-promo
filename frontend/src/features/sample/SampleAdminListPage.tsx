@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import Button from '../../shared/components/Button';
 import { useSampleList } from './useSampleQueries';
+import { formatDate } from '../../shared/formatDate';
 
 function SampleAdminListPage() {
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ function SampleAdminListPage() {
           <div className="admin-table-row" key={s.id}>
             <span className="admin-table-cell">{s.name}</span>
             <span className="admin-table-cell">
-              {s.start_date} ~ {s.end_date}
+              {formatDate(s.start_date)} ~ {formatDate(s.end_date)}
             </span>
             <span className="admin-table-cell">
               <div className="admin-table-actions">

@@ -5,6 +5,7 @@ import { useMyApplications } from '../application/useApplicationQueries';
 import { useApply, useCancelApply } from '../application/useApplicationMutations';
 import Button from '../../shared/components/Button';
 import { resolveAssetUrl } from '../../shared/httpClient';
+import { formatDate } from '../../shared/formatDate';
 
 function SampleDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -26,7 +27,7 @@ function SampleDetailPage() {
             <h1>{data.name}</h1>
             <p>{data.description ?? ''}</p>
             <p>
-              {data.start_date} ~ {data.end_date}
+              {formatDate(data.start_date)} ~ {formatDate(data.end_date)}
             </p>
             <span className="badge" style={{ color: getStatusBadge(data.status).color }}>
               <span aria-hidden="true">●</span> <span>{getStatusBadge(data.status).label}</span>

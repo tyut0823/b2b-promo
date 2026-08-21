@@ -2,6 +2,7 @@ import { useMyApplications } from './useApplicationQueries';
 import { useApply, useCancelApply } from './useApplicationMutations';
 import Button from '../../shared/components/Button';
 import Card from '../../shared/components/Card';
+import { formatDate } from '../../shared/formatDate';
 
 function MyApplicationsPage() {
   const { data, isLoading, isError, error } = useMyApplications();
@@ -18,7 +19,7 @@ function MyApplicationsPage() {
           <div>
             <h2>{item.sample.name}</h2>
             <p>
-              {item.sample.start_date} ~ {item.sample.end_date}
+              {formatDate(item.sample.start_date)} ~ {formatDate(item.sample.end_date)}
             </p>
             <p>상태: {item.status === 'APPLIED' ? '신청' : '취소'}</p>
             {item.status === 'APPLIED' && (

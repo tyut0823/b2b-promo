@@ -3,6 +3,7 @@ import Card from '../../shared/components/Card';
 import { useSampleList } from './useSampleQueries';
 import { getStatusBadge } from './statusBadge';
 import { resolveAssetUrl } from '../../shared/httpClient';
+import { formatDate } from '../../shared/formatDate';
 
 function SampleListPage() {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ function SampleListPage() {
             <div>
               <h2>{s.name}</h2>
               <p>
-                {s.start_date} ~ {s.end_date}
+                {formatDate(s.start_date)} ~ {formatDate(s.end_date)}
               </p>
               <span className="badge" style={{ color: badge.color }}>
                 <span aria-hidden="true">●</span> <span>{badge.label}</span>

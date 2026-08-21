@@ -1,0 +1,268 @@
+{
+  "run_id": "0565db06",
+  "frontend_url": "https://b2b-promo-pfey.vercel.app",
+  "backend_url": "https://b2b-promo.vercel.app",
+  "buyer_email": "e2e-prod-web-buyer-0565db06@b2b-promo.test",
+  "admin_email": "e2e-prod-web-admin-0565db06@b2b-promo.test",
+  "cleanup": [
+    "E2E 테스트 샘플/신청/계정 정리 완료"
+  ],
+  "results": [
+    {
+      "n": 1,
+      "scenario": "4.2",
+      "title": "미인증 접근 시 로그인 화면으로 리다이렉트",
+      "status": "PASS",
+      "screenshot": "screenshots_prod/01_unauthenticated_redirect.png",
+      "detail": "비로그인 상태로 /samples 접근 시 /login으로 리다이렉트됨"
+    },
+    {
+      "n": 2,
+      "scenario": "3.1",
+      "title": "회원가입 화면",
+      "status": "PASS",
+      "screenshot": "screenshots_prod/02_signup_page.png",
+      "detail": "회원가입 화면 진입"
+    },
+    {
+      "n": 3,
+      "scenario": "3.1",
+      "title": "회원가입 성공 -> 로그인 화면 이동",
+      "status": "PASS",
+      "screenshot": "screenshots_prod/03_signup_success.png",
+      "detail": "회원가입 성공(e2e-prod-web-buyer-0565db06@b2b-promo.test) 후 로그인 화면으로 이동"
+    },
+    {
+      "n": 4,
+      "scenario": "3.1(예외)",
+      "title": "잘못된 비밀번호로 로그인 시 에러 표시",
+      "status": "PASS",
+      "screenshot": "screenshots_prod/04_login_wrong_password.png",
+      "detail": "잘못된 비밀번호로 로그인 시 에러 메시지 표시 확인"
+    },
+    {
+      "n": 5,
+      "scenario": "3.1",
+      "title": "로그인 성공 -> 샘플 목록 화면 이동",
+      "status": "PASS",
+      "screenshot": "screenshots_prod/05_login_success_samples.png",
+      "detail": "로그인 성공 시 샘플 목록 화면으로 이동"
+    },
+    {
+      "n": 6,
+      "scenario": "3.1(예외)",
+      "title": "중복 이메일 회원가입 시 에러 표시",
+      "status": "PASS",
+      "screenshot": "screenshots_prod/06_signup_duplicate_email.png",
+      "detail": "이미 가입된 이메일로 재가입 시 에러 메시지 표시"
+    },
+    {
+      "n": 7,
+      "scenario": "2.1",
+      "title": "관리자 로그인 -> 샘플 관리 화면",
+      "status": "PASS",
+      "screenshot": "screenshots_prod/07_admin_login.png",
+      "detail": "관리자 로그인 성공 -> 샘플 관리 화면으로 이동"
+    },
+    {
+      "n": 8,
+      "scenario": "2.1",
+      "title": "관리자 샘플 등록(진행중 샘플)",
+      "status": "PASS",
+      "screenshot": "screenshots_prod/08_admin_register_ongoing.png",
+      "detail": "샘플 등록: E2E웹 진행 샘플 0565db06 (2026-08-15 ~ 2026-08-28)"
+    },
+    {
+      "n": 9,
+      "scenario": "2.1",
+      "title": "관리자 샘플 등록(예정 샘플)",
+      "status": "PASS",
+      "screenshot": "screenshots_prod/09_admin_register_scheduled.png",
+      "detail": "샘플 등록: E2E웹 예정 샘플 0565db06 (2026-09-10 ~ 2026-09-20)"
+    },
+    {
+      "n": 10,
+      "scenario": "2.1",
+      "title": "관리자 샘플 등록(종료 샘플)",
+      "status": "PASS",
+      "screenshot": "screenshots_prod/10_admin_register_ended.png",
+      "detail": "샘플 등록: E2E웹 종료 샘플 0565db06 (2026-07-01 ~ 2026-07-10)"
+    },
+    {
+      "n": 11,
+      "scenario": "2.1",
+      "title": "관리자 샘플 수정",
+      "status": "PASS",
+      "screenshot": "screenshots_prod/11_admin_edit_sample.png",
+      "detail": "샘플 수정 저장 성공"
+    },
+    {
+      "n": 12,
+      "scenario": "3.2",
+      "title": "샘플 목록 조회",
+      "status": "PASS",
+      "screenshot": "screenshots_prod/12_sample_list.png",
+      "detail": "샘플 목록에 신청 가능한 샘플들이 표시됨(신규 등록 샘플 포함)"
+    },
+    {
+      "n": 13,
+      "scenario": "3.2 / 3.3(예외: 시작 전)",
+      "title": "예정 샘플 상세 조회 및 신청 버튼 미노출",
+      "status": "PASS",
+      "screenshot": "screenshots_prod/13_sample_detail_scheduled.png",
+      "detail": "신청 시작 전(SCHEDULED) 샘플 상세: 조회는 가능하나 신청 버튼 없음"
+    },
+    {
+      "n": 14,
+      "scenario": "3.2",
+      "title": "진행중 샘플 상세 조회",
+      "status": "PASS",
+      "screenshot": "screenshots_prod/14_sample_detail_ongoing.png",
+      "detail": "진행중(ONGOING) 샘플 상세: 신청하기 버튼 노출"
+    },
+    {
+      "n": 15,
+      "scenario": "3.3",
+      "title": "샘플 신청",
+      "status": "PASS",
+      "screenshot": "screenshots_prod/15_sample_apply.png",
+      "detail": "신청하기 클릭 -> 신청 취소 버튼으로 전환 확인"
+    },
+    {
+      "n": 16,
+      "scenario": "3.3(예외: 중복 신청)",
+      "title": "중복 신청 시 409 및 안내 문구",
+      "status": "PASS",
+      "screenshot": "screenshots_prod/16_duplicate_apply.png",
+      "detail": "이미 APPLIED 상태에서 재신청 시도 -> 409 '이미 신청한 샘플입니다.'"
+    },
+    {
+      "n": 17,
+      "scenario": "3.3(예외: 종료 후)",
+      "title": "종료된 샘플 신규 신청 차단",
+      "status": "PASS",
+      "screenshot": "screenshots_prod/17_apply_after_end.png",
+      "detail": "UI는 신청 버튼을 노출하지 않음(정상), 백엔드도 신규 신청 시 400 '신청 기간이 아닙니다.' 반환 확인"
+    },
+    {
+      "n": 18,
+      "scenario": "3.4",
+      "title": "샘플 신청 취소",
+      "status": "PASS",
+      "screenshot": "screenshots_prod/18_sample_cancel.png",
+      "detail": "신청 취소 클릭 -> 신청하기 버튼으로 전환(신청 가능 상태로 복귀)"
+    },
+    {
+      "n": 19,
+      "scenario": "3.4",
+      "title": "취소 후 재신청(샘플 상세에서)",
+      "status": "PASS",
+      "screenshot": "screenshots_prod/19_reapply_from_detail.png",
+      "detail": "취소 후 동일 샘플 재신청 성공(신청 취소 버튼 재노출)"
+    },
+    {
+      "n": 20,
+      "scenario": "3.5",
+      "title": "내 신청 내역 조회",
+      "status": "PASS",
+      "screenshot": "screenshots_prod/20_my_applications.png",
+      "detail": "내 신청 내역에 신청/취소 상태가 표시됨(종료 샘플의 취소 이력 포함)"
+    },
+    {
+      "n": 21,
+      "scenario": "3.4(예외: 종료 후 재신청)",
+      "title": "종료된 샘플의 취소 상태 - 재신청 버튼 비활성",
+      "status": "PASS",
+      "screenshot": "screenshots_prod/21_reapply_disabled_for_ended.png",
+      "detail": "종료된 샘플의 취소 이력에 대해 재신청 버튼이 비활성 상태로 표시됨"
+    },
+    {
+      "n": 22,
+      "scenario": "3.4",
+      "title": "내 신청 내역에서 취소 후 재신청 버튼 노출",
+      "status": "PASS",
+      "screenshot": "screenshots_prod/22_my_applications_cancel.png",
+      "detail": "내 신청 내역에서 취소 -> 재신청 버튼 노출 확인"
+    },
+    {
+      "n": 23,
+      "scenario": "4.1",
+      "title": "마이페이지 진입 및 내 정보 조회",
+      "status": "PASS",
+      "screenshot": "screenshots_prod/23_mypage_view.png",
+      "detail": "마이페이지 내 정보 프리필 확인"
+    },
+    {
+      "n": 24,
+      "scenario": "4.1",
+      "title": "마이페이지 내 정보 수정",
+      "status": "PASS",
+      "screenshot": "screenshots_prod/24_mypage_update_profile.png",
+      "detail": "소속 거래처명을 'E2E웹상사(수정)'로 수정 후 저장 성공"
+    },
+    {
+      "n": 25,
+      "scenario": "4.1",
+      "title": "마이페이지 비밀번호 변경",
+      "status": "PASS",
+      "screenshot": "screenshots_prod/25_mypage_change_password.png",
+      "detail": "비밀번호 변경 요청 성공"
+    },
+    {
+      "n": 26,
+      "scenario": "4.1",
+      "title": "비밀번호 변경 후 재로그인",
+      "status": "PASS",
+      "screenshot": "screenshots_prod/26_relogin_new_password.png",
+      "detail": "변경된 새 비밀번호로 재로그인 성공"
+    },
+    {
+      "n": 27,
+      "scenario": "공통",
+      "title": "로그아웃",
+      "status": "PASS",
+      "screenshot": "screenshots_prod/27_logout.png",
+      "detail": "로그아웃 클릭 -> 로그인 화면으로 이동"
+    },
+    {
+      "n": 28,
+      "scenario": "4.2",
+      "title": "로그아웃 후 보호된 화면 접근 차단",
+      "status": "PASS",
+      "screenshot": "screenshots_prod/28_after_logout_blocked.png",
+      "detail": "로그아웃 후 관리자 화면 직접 접근 시 로그인 화면으로 리다이렉트"
+    },
+    {
+      "n": 29,
+      "scenario": "4.2(역할 기반)",
+      "title": "거래처 담당자의 관리자 화면 접근 차단",
+      "status": "PASS",
+      "screenshot": "screenshots_prod/29_buyer_blocked_from_admin.png",
+      "detail": "BUYER 계정으로 /admin/samples 접근 시 '/'로 리다이렉트(관리자 전용 화면 차단)"
+    },
+    {
+      "n": 30,
+      "scenario": "예외 케이스",
+      "title": "존재하지 않는 샘플 상세 조회(404)",
+      "status": "PASS",
+      "screenshot": "screenshots_prod/30_sample_not_found.png",
+      "detail": "존재하지 않는 샘플 id 조회 시 404 안내 문구 표시"
+    },
+    {
+      "n": 31,
+      "scenario": "2.2",
+      "title": "관리자 신청 현황 조회",
+      "status": "PASS",
+      "screenshot": "screenshots_prod/31_admin_application_status.png",
+      "detail": "관리자가 신청 현황에서 거래처명/담당자명/상태를 조회함"
+    },
+    {
+      "n": 32,
+      "scenario": "4.1",
+      "title": "관리자 마이페이지 접근 및 수정",
+      "status": "PASS",
+      "screenshot": "screenshots_prod/32_admin_mypage.png",
+      "detail": "관리자 계정도 동일한 마이페이지에서 정보 수정 가능함을 확인"
+    }
+  ]
+}

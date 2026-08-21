@@ -1,8 +1,8 @@
 {
-  "run_id": "db80679c",
+  "run_id": "e891c7cc",
   "base_url": "https://b2b-promo.vercel.app",
-  "admin_email": "e2e-prod-admin-db80679c@b2b-promo.test",
-  "buyer_email": "e2e-prod-buyer-db80679c@b2b-promo.test",
+  "admin_email": "e2e-prod-admin-e891c7cc@b2b-promo.test",
+  "buyer_email": "e2e-prod-buyer-e891c7cc@b2b-promo.test",
   "results": [
     {
       "n": 1,
@@ -17,7 +17,7 @@
       "scenario": "3.1",
       "title": "거래처 담당자 회원가입",
       "status": "PASS",
-      "detail": "POST /auth/signup -> 201 (e2e-prod-buyer-db80679c@b2b-promo.test)",
+      "detail": "POST /auth/signup -> 201 (e2e-prod-buyer-e891c7cc@b2b-promo.test)",
       "evidence": null
     },
     {
@@ -240,13 +240,11 @@
       "n": 30,
       "scenario": "FE-7 사후 기능",
       "title": "샘플 이미지 업로드(서버리스 환경)",
-      "status": "FAIL",
-      "detail": "POST /uploads -> 500 {\"message\":\"서버 오류가 발생했습니다.\"}",
+      "status": "PASS",
+      "detail": "POST /uploads -> 201 'https://dmtovfjybxhmydmopyeu.supabase.co/storage/v1/object/public/sample-images/1787287713601-361656911.png', 파일 서빙 확인: 200",
       "evidence": {
-        "status": 500,
-        "body": {
-          "message": "서버 오류가 발생했습니다."
-        }
+        "uploadStatus": 201,
+        "fileServeStatus": 200
       }
     }
   ]

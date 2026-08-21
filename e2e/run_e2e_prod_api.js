@@ -8,23 +8,41 @@
  * ADMIN 계정은 자가 회원가입이 없으므로, 운영 DB(Supabase)에 직접 접속해 테스트용 ADMIN 계정을
  * bcrypt로 생성하고 끝나면 테스트 데이터(샘플/신청/두 계정)를 전부 정리한다.
  *
- * 실행: node run_e2e_prod.js  (backend/node_modules의 bcrypt, pg를 사용하므로 backend에서 실행)
+ * 실행: NODE_PATH=<backend>/node_modules node run_e2e_prod_api.js
+ *   (backend/node_modules의 bcrypt, pg, @supabase/supabase-js를 사용)
+ *   e2e/.env에 DATABASE_URL, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY를 채워둘 것(e2e/.env.example 참고).
+ *   자격증명은 절대 이 파일에 하드코딩하지 않는다 — e2e/.env는 gitignore 대상이다.
  * 결과: results_prod.json, report_prod.md (이 스크립트가 report는 별도로 사람이 작성)
  */
 
+require('dotenv').config({ path: require('path').join(__dirname, '.env') });
+
 const bcrypt = require('bcrypt');
 const { Pool } = require('pg');
+const { createClient } = require('@supabase/supabase-js');
 const fs = require('fs');
 const path = require('path');
 
-const BASE = 'https://b2b-promo.vercel.app';
+function requireEnv(key) {
+  const value = process.env[key];
+  if (!value) {
+    throw new Error(`${key}가 없습니다. e2e/.env.example을 참고해 e2e/.env를 채워주세요.`);
+  }
+  return value;
+}
+
+const BASE = process.env.PROD_BASE_URL || 'https://b2b-promo.vercel.app';
 const HERE = __dirname;
+const STORAGE_BUCKET = process.env.SUPABASE_STORAGE_BUCKET || 'sample-images';
 
 const pool = new Pool({
-  connectionString:
-    'postgresql://postgres.dmtovfjybxhmydmopyeu:hxJkGq8jZvZTWF3o@aws-0-ap-northeast-2.pooler.supabase.com:6543/postgres',
+  connectionString: requireEnv('DATABASE_URL'),
   ssl: { rejectUnauthorized: false },
 });
+
+const supabaseStorage = createClient(requireEnv('SUPABASE_URL'), requireEnv('SUPABASE_SERVICE_ROLE_KEY'));
+
+const uploadedStorageFiles = [];
 
 const RUN_ID = Math.random().toString(16).slice(2, 10);
 const ADMIN_EMAIL = `e2e-prod-admin-${RUN_ID}@b2b-promo.test`;
@@ -380,8 +398,9 @@ async function main() {
     });
     const body = await res.json().catch(() => null);
     if (res.status === 201) {
+      uploadedStorageFiles.push(body.url.split('/').pop());
       // 업로드된 파일이 실제로 서빙되는지도 확인
-      const fileRes = await fetch(`${BASE}${body.url}`);
+      const fileRes = await fetch(body.url);
       return {
         detail: `POST /uploads -> 201 '${body.url}', 파일 서빙 확인: ${fileRes.status}`,
         evidence: { uploadStatus: res.status, fileServeStatus: fileRes.status },
@@ -395,6 +414,9 @@ async function main() {
     await pool.query('DELETE FROM applications WHERE sample_id = ANY($1)', [[ongoingId, scheduledId, endedId]]);
     await pool.query('DELETE FROM samples WHERE id = ANY($1)', [[ongoingId, scheduledId, endedId]]);
     await pool.query('DELETE FROM users WHERE email = ANY($1)', [[ADMIN_EMAIL, BUYER_EMAIL]]);
+    if (uploadedStorageFiles.length > 0) {
+      await supabaseStorage.storage.from(STORAGE_BUCKET).remove(uploadedStorageFiles);
+    }
     console.log('CLEANUP OK');
   } catch (e) {
     console.error('CLEANUP FAILED:', e.message);

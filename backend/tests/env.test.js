@@ -9,6 +9,9 @@ const REQUIRED_ENV = {
   JWT_ACCESS_EXPIRES_IN: '1h',
   JWT_REFRESH_EXPIRES_IN: '14d',
   PORT: '3000',
+  SUPABASE_URL: 'https://example.supabase.co',
+  SUPABASE_SERVICE_ROLE_KEY: 'service-role-key',
+  SUPABASE_STORAGE_BUCKET: 'sample-images',
 };
 
 for (const missingKey of Object.keys(REQUIRED_ENV)) {

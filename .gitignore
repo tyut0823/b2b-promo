@@ -13,6 +13,7 @@ dist/
 # Env files
 .env
 .env.local
+.env.production
 .env.development.local
 .env.test.local
 .env.production.local
@@ -30,10 +31,6 @@ pnpm-debug.log*
 
 # Misc
 *.local
-
-# Uploaded files (local disk storage, backend/src/middlewares/upload.js)
-backend/uploads/*
-!backend/uploads/.gitkeep
 
 # Generated at runtime by e2e/run_e2e.py (writes into backend/ so `require('pg')` resolves)
 backend/_e2e_db_query.js

@@ -1,17 +1,16 @@
 const { test, after } = require('node:test');
 const assert = require('node:assert');
 const { randomUUID } = require('node:crypto');
-const fs = require('node:fs');
-const path = require('node:path');
 const jwt = require('jsonwebtoken');
 const env = require('../src/config/env');
+const supabase = require('../src/config/supabase');
 
 const BASE_URL = 'http://localhost:3000';
-const uploadedUrls = [];
+const uploadedFilenames = [];
 
-after(() => {
-  for (const url of uploadedUrls) {
-    fs.rmSync(path.join(__dirname, '..', url), { force: true });
+after(async () => {
+  if (uploadedFilenames.length > 0) {
+    await supabase.storage.from(env.SUPABASE_STORAGE_BUCKET).remove(uploadedFilenames);
   }
 });
 
@@ -27,7 +26,11 @@ function makeForm() {
   return form;
 }
 
-test('ADMIN이 파일을 업로드하면 201과 url을 반환한다', async () => {
+function trackFilename(url) {
+  uploadedFilenames.push(url.split('/').pop());
+}
+
+test('ADMIN이 파일을 업로드하면 201과 Supabase Storage 공개 URL을 반환한다', async () => {
   const res = await fetch(`${BASE_URL}/uploads`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${adminToken}` },
@@ -35,8 +38,8 @@ test('ADMIN이 파일을 업로드하면 201과 url을 반환한다', async () =
   });
   const body = await res.json();
   assert.strictEqual(res.status, 201);
-  assert.match(body.url, /^\/uploads\/.+\.png$/);
-  uploadedUrls.push(body.url);
+  assert.match(body.url, /^https:\/\/.+\/storage\/v1\/object\/public\/sample-images\/.+\.png$/);
+  trackFilename(body.url);
 });
 
 test('BUYER가 업로드하면 403을 반환한다', async () => {
@@ -62,14 +65,14 @@ test('파일 없이 업로드하면 400을 반환한다', async () => {
   assert.strictEqual(res.status, 400);
 });
 
-test('업로드된 파일은 /uploads/<filename>으로 접근할 수 있다', async () => {
+test('업로드된 파일은 반환된 공개 URL로 접근할 수 있다', async () => {
   const uploadRes = await fetch(`${BASE_URL}/uploads`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${adminToken}` },
     body: makeForm(),
   });
   const { url } = await uploadRes.json();
-  uploadedUrls.push(url);
-  const fileRes = await fetch(`${BASE_URL}${url}`);
+  trackFilename(url);
+  const fileRes = await fetch(url);
   assert.strictEqual(fileRes.status, 200);
 });

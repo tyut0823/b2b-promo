@@ -592,7 +592,7 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "properties": { "url": { "type": "string", "description": "예: /uploads/1700000000000-123456789.png" } }
+                  "properties": { "url": { "type": "string", "description": "Supabase Storage의 공개 URL. 예: https://<project-ref>.supabase.co/storage/v1/object/public/sample-images/1700000000000-123456789.png" } }
                 }
               }
             }

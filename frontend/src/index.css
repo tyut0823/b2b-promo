@@ -77,6 +77,17 @@ body {
 .sample-form-row { display: flex; flex-direction: column; gap: 16px; }
 .mypage-sections { display: flex; flex-direction: column; gap: 24px; }
 
+.roulette-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center; z-index: 100; }
+.roulette-modal { background: #fff; border-radius: 12px; padding: 32px; display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; }
+.roulette-card { width: 96px; height: 96px; border-radius: 8px; background: var(--color-primary); color: #fff; font-size: 48px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.roulette-spinning { animation: roulette-flip 0.1s linear infinite; }
+
+@keyframes roulette-flip {
+  from { transform: scale(1); }
+  50% { transform: scale(0.9); }
+  to { transform: scale(1); }
+}
+
 @media (min-width: 768px) {
   /* 768px: mobile → desktop, see docs/7-wireframe.md 2절 */
   .nav-inner { height: 56px; padding-top: 0; padding-bottom: 0; flex-direction: row; align-items: center; justify-content: space-between; }

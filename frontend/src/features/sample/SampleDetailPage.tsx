@@ -6,6 +6,7 @@ import { useApply, useCancelApply } from '../application/useApplicationMutations
 import Button from '../../shared/components/Button';
 import { resolveAssetUrl } from '../../shared/httpClient';
 import { formatDate } from '../../shared/formatDate';
+import { useRouletteStore } from '../../stores/rouletteStore';
 
 function SampleDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -14,6 +15,7 @@ function SampleDetailPage() {
   const myApplication = applications?.find((a) => a.sample_id === id && a.status === 'APPLIED');
   const applyMutation = useApply();
   const cancelMutation = useCancelApply();
+  const remaining = useRouletteStore((s) => s.remaining);
 
   return (
     <div>
@@ -41,10 +43,12 @@ function SampleDetailPage() {
                 >
                   신청 취소
                 </Button>
-              ) : (
+              ) : remaining > 0 ? (
                 <Button onClick={() => applyMutation.mutate(id!)} disabled={applyMutation.isPending}>
                   신청하기
                 </Button>
+              ) : (
+                <p>오늘 신청 가능 개수를 모두 사용했어요.</p>
               ))}
             {applyMutation.isError && <p style={{ color: 'var(--color-status-danger)' }}>{applyMutation.error.message}</p>}
             {cancelMutation.isError && <p style={{ color: 'var(--color-status-danger)' }}>{cancelMutation.error.message}</p>}

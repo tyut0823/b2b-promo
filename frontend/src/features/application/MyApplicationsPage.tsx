@@ -3,11 +3,13 @@ import { useApply, useCancelApply } from './useApplicationMutations';
 import Button from '../../shared/components/Button';
 import Card from '../../shared/components/Card';
 import { formatDate } from '../../shared/formatDate';
+import { useRouletteStore } from '../../stores/rouletteStore';
 
 function MyApplicationsPage() {
   const { data, isLoading, isError, error } = useMyApplications();
   const applyMutation = useApply();
   const cancelMutation = useCancelApply();
+  const remaining = useRouletteStore((s) => s.remaining);
 
   if (isLoading) return <p>불러오는 중...</p>;
   if (isError) return <p>{error.message}</p>;
@@ -30,7 +32,7 @@ function MyApplicationsPage() {
             {item.status === 'CANCELLED' && (
               <Button
                 onClick={() => applyMutation.mutate(item.sample.id)}
-                disabled={applyMutation.isPending || item.sample.status === 'ENDED'}
+                disabled={applyMutation.isPending || item.sample.status === 'ENDED' || remaining <= 0}
               >
                 재신청
               </Button>

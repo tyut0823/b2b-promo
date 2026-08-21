@@ -1,9 +1,11 @@
 import { Link, NavLink, Outlet } from 'react-router-dom';
 import LogoutButton from '../components/LogoutButton';
+import RouletteModal from '../../features/roulette/RouletteModal';
 
 function BuyerLayout() {
   return (
     <>
+      <RouletteModal />
       <header className="nav">
         <div className="container nav-inner">
           <Link to="/samples" className="nav-logo">b2b-promo</Link>

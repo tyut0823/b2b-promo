@@ -4,6 +4,7 @@ import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { routes } from '../../app/router';
 import { useAuthStore } from '../../stores/authStore';
+import { useRouletteStore } from '../../stores/rouletteStore';
 
 function jsonResponse(status: number, body: unknown) {
   return {
@@ -97,6 +98,7 @@ describe('SampleDetailPage 샘플 신청/취소', () => {
   beforeEach(() => {
     localStorage.clear();
     useAuthStore.setState({ accessToken: null, refreshToken: null, user: null });
+    useRouletteStore.setState({ userId: 'u1', date: new Date().toISOString().slice(0, 10), total: 3, remaining: 3 });
     globalThis.fetch = vi.fn();
     loginAsBuyer();
   });
@@ -154,6 +156,19 @@ describe('SampleDetailPage 샘플 신청/취소', () => {
     renderSampleDetailPage();
 
     await screen.findByRole('button', { name: '신청 취소' });
+    expect(screen.queryByRole('button', { name: '신청하기' })).toBeNull();
+  });
+
+  it('오늘 신청 가능 개수를 다 썼으면 신청하기 버튼 대신 안내 문구가 보인다', async () => {
+    useRouletteStore.setState({ remaining: 0 });
+    const fetchMock = globalThis.fetch as ReturnType<typeof vi.fn>;
+    fetchMock
+      .mockResolvedValueOnce(jsonResponse(200, mockSample('ONGOING')))
+      .mockResolvedValueOnce(jsonResponse(200, []));
+
+    renderSampleDetailPage();
+
+    await screen.findByText('오늘 신청 가능 개수를 모두 사용했어요.');
     expect(screen.queryByRole('button', { name: '신청하기' })).toBeNull();
   });
 

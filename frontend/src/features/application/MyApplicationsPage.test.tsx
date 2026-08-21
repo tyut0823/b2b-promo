@@ -4,6 +4,7 @@ import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { routes } from '../../app/router';
 import { useAuthStore } from '../../stores/authStore';
+import { useRouletteStore } from '../../stores/rouletteStore';
 
 function jsonResponse(status: number, body: unknown) {
   return {
@@ -60,6 +61,7 @@ describe('MyApplicationsPage', () => {
   beforeEach(() => {
     localStorage.clear();
     useAuthStore.setState({ accessToken: null, refreshToken: null, user: null });
+    useRouletteStore.setState({ userId: 'u1', date: new Date().toISOString().slice(0, 10), total: 3, remaining: 3 });
     globalThis.fetch = vi.fn();
     loginAsBuyer();
   });
@@ -99,6 +101,18 @@ describe('MyApplicationsPage', () => {
   it('종료된 샘플은 재신청 버튼이 비활성화된다', async () => {
     (globalThis.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce(
       jsonResponse(200, [mockApplication({ status: 'CANCELLED', sampleStatus: 'ENDED' })])
+    );
+
+    renderMyApplicationsPage();
+
+    const reapplyButton = await screen.findByRole('button', { name: '재신청' });
+    expect(reapplyButton).toBeDisabled();
+  });
+
+  it('오늘 신청 가능 개수를 다 썼으면 재신청 버튼이 비활성화된다', async () => {
+    useRouletteStore.setState({ remaining: 0 });
+    (globalThis.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce(
+      jsonResponse(200, [mockApplication({ status: 'CANCELLED' })])
     );
 
     renderMyApplicationsPage();

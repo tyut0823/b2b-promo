@@ -181,7 +181,7 @@ describe('SampleDetailPage 샘플 신청/취소', () => {
     renderSampleDetailPage();
 
     await screen.findByText('샘플A');
-    expect(screen.queryByRole('button', { name: /신청/ })).toBeNull();
+    expect(screen.queryByRole('button', { name: /^신청(하기|\s*취소)$/ })).toBeNull();
   });
 
   it('ENDED 상태면 신청 관련 버튼이 없다', async () => {
@@ -193,7 +193,7 @@ describe('SampleDetailPage 샘플 신청/취소', () => {
     renderSampleDetailPage();
 
     await screen.findByText('샘플A');
-    expect(screen.queryByRole('button', { name: /신청/ })).toBeNull();
+    expect(screen.queryByRole('button', { name: /^신청(하기|\s*취소)$/ })).toBeNull();
   });
 
   it('신청 성공 시 /applications/me만 재요청되고 /samples 목록 전체는 재요청되지 않는다', async () => {

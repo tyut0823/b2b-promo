@@ -3,10 +3,14 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { beforeEach, describe, expect, it } from 'vitest';
 import BuyerLayout from './BuyerLayout';
 import { useAuthStore } from '../../stores/authStore';
+import { useRouletteStore } from '../../stores/rouletteStore';
 
 describe('BuyerLayout', () => {
   beforeEach(() => {
+    localStorage.clear();
     useAuthStore.setState({ accessToken: 'token', refreshToken: 'r1', user: { id: 'u1', role: 'BUYER' } });
+    // 이미 오늘 뽑은 상태로 세팅해 룰렛 모달이 자동으로 뜨지 않게 한다(이 describe는 nav 자체를 검증).
+    useRouletteStore.setState({ userId: 'u1', date: new Date().toISOString().slice(0, 10), total: 2, remaining: 2 });
   });
 
   function renderLayout() {
@@ -46,5 +50,18 @@ describe('BuyerLayout', () => {
 
     expect(useAuthStore.getState().accessToken).toBeNull();
     expect(screen.getByText('로그인 화면')).toBeInTheDocument();
+  });
+
+  it('오늘 신청 가능한 샘플 개수가 nav에 표시되고, 클릭하면 룰렛 결과 모달이 뜬다', () => {
+    renderLayout();
+
+    const badge = screen.getByRole('button', { name: '오늘 신청 가능한 샘플 개수 : 2개' });
+    fireEvent.click(badge);
+
+    expect(screen.getByText('오늘의 룰렛 결과')).toBeInTheDocument();
+    expect(screen.getByText('오늘 뽑은 개수: 2개 (남은 개수: 2개)')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: '닫기' }));
+    expect(screen.queryByText('오늘의 룰렛 결과')).toBeNull();
   });
 });

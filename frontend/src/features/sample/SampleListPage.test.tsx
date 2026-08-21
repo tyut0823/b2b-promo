@@ -4,6 +4,7 @@ import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { routes } from '../../app/router';
 import { useAuthStore } from '../../stores/authStore';
+import { useRouletteStore } from '../../stores/rouletteStore';
 
 function jsonResponse(status: number, body: unknown) {
   return {
@@ -50,6 +51,7 @@ describe('SampleListPage', () => {
   beforeEach(() => {
     localStorage.clear();
     useAuthStore.setState({ accessToken: null, refreshToken: null, user: null });
+    useRouletteStore.setState({ userId: 'u1', date: new Date().toISOString().slice(0, 10), total: 3, remaining: 3 });
     globalThis.fetch = vi.fn();
   });
 

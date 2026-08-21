@@ -79,14 +79,13 @@ body {
 
 .roulette-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center; z-index: 100; }
 .roulette-modal { background: #fff; border-radius: 12px; padding: 32px; display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; }
-.roulette-card { width: 96px; height: 96px; border-radius: 8px; background: var(--color-primary); color: #fff; font-size: 48px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
-.roulette-spinning { animation: roulette-flip 0.1s linear infinite; }
-
-@keyframes roulette-flip {
-  from { transform: scale(1); }
-  50% { transform: scale(0.9); }
-  to { transform: scale(1); }
+.roulette-wheel-wrap { position: relative; }
+.roulette-wheel-pointer {
+  position: absolute; top: -6px; left: 50%; transform: translateX(-50%);
+  width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent;
+  border-top: 20px solid var(--color-text); z-index: 1;
 }
+.nav-roulette-count { background: none; border: none; padding: 0; font: inherit; font-weight: 700; color: var(--color-primary); cursor: pointer; }
 
 @media (min-width: 768px) {
   /* 768px: mobile → desktop, see docs/7-wireframe.md 2절 */

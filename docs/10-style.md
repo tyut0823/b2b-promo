@@ -5,6 +5,7 @@
 | 버전 | 날짜 | 변경 내용 |
 |---|---|---|
 | 0.1 | 2026-08-21 | 최초 작성 |
+| 0.2 | 2026-08-21 | 일일 신청 가능 개수 룰렛(부가 기능) 회전판이 별도 색상 없이 기존 상태 배지 토큰(`--color-primary`/`--color-status-warn`/`--color-status-danger`)을 재사용함을 명시 |
 
 ## 1. 개요
 
@@ -43,7 +44,7 @@
 | `--color-badge-dark` | `#111111` | 강조 배지 배경(예: "AI Pick"류 추천 배지) — b2b-promo에는 없지만 팔레트로만 보유 |
 | `--color-badge-outline` | `#D32F2F` | 강조 아웃라인 배지 텍스트/테두리(예: 인증 배지) |
 
-> 참고 화면의 상태 점(●) 색상 3단계(초록/노랑/빨강)를 b2b-promo의 샘플 상태(`ONGOING`/`SCHEDULED`/`ENDED`) 배지 색상에 그대로 대응시킨다.
+> 참고 화면의 상태 점(●) 색상 3단계(초록/노랑/빨강)를 b2b-promo의 샘플 상태(`ONGOING`/`SCHEDULED`/`ENDED`) 배지 색상에 그대로 대응시킨다. 일일 신청 가능 개수 룰렛(`7-wireframe.md` 11절, 부가 기능)의 회전판 3구간도 새 색상을 추가하지 않고 `--color-primary`/`--color-status-warn`/`--color-status-danger`를 그대로 재사용한다.
 
 ## 3. 타이포그래피
 

@@ -10,6 +10,7 @@
 | 0.4 | 2026-08-13 | 신청 유일성 보장 섹션의 컬럼명을 ERD/schema.sql과 일치시킴(buyer_id → user_id) |
 | 0.5 | 2026-08-13 | 환경변수 목록에 `FRONTEND_ORIGIN`(CORS 허용 origin) 추가, 기본 포트 3000 명시 |
 | 0.6 | 2026-08-21 | 7절 백엔드 디렉토리 구조를 실제 구현(routes/controllers/services 파일 목록, tests/ 파일 목록, 존재하지 않는 README.md 제거)에 맞춰 갱신 |
+| 0.7 | 2026-08-21 | 샘플 이미지 업로드가 Supabase Storage로 구현됨에 따라 7절 백엔드 구조·5절 환경변수 목록 갱신. 사용자 요청으로 추가된 "일일 신청 가능 개수 룰렛" 부가 기능 때문에 스토어가 2개(authStore, rouletteStore)로 늘어난 것을 반영해 2절 Zustand 원칙 문구 수정. 6절 프론트엔드 구조에 `roulette/`, `stores/rouletteStore.ts`, `shared/formatDate.ts`, `shared/components/LogoutButton.tsx` 추가 |
 
 이 문서는 `1-domain-definition.md`, `2-usecase.md`, `3-PRD.md`, `4-user-scenario.md`에서 정의한 도메인/요구사항을 실제 코드로 구현할 때 따라야 할 구조·원칙을 정의한다. 3일/1인 개발 규모의 교육용 MVP를 기준으로 하며, 과도한 추상화나 확장성 대비 설계는 의도적으로 배제한다.
 
@@ -35,7 +36,7 @@
 ### 프론트엔드
 
 - **Zustand vs TanStack Query 책임 분리**
-  - Zustand: 서버에서 오지 않거나 여러 화면이 공유해야 하는 클라이언트 상태만 담당 (accessToken, 로그인한 user 정보/role). 이 프로젝트는 `authStore` 하나로 충분하며 스토어를 과도하게 쪼개지 않는다.
+  - Zustand: 서버에서 오지 않거나 여러 화면이 공유해야 하는 클라이언트 상태만 담당 (accessToken, 로그인한 user 정보/role). 인증 상태는 `authStore` 하나로 충분하다. 성격이 명확히 다른 클라이언트 상태(예: 일일 신청 가능 개수 룰렛 — 사용자·날짜별로 로컬에만 저장되고 서버와 무관한 값)가 생기면 `authStore`에 억지로 합치지 않고 별도 스토어(`rouletteStore`)로 분리한다. 단, 스토어 개수를 근거 없이 늘리지는 않는다(관심사가 명확히 다를 때만 분리).
   - TanStack Query: 서버에서 가져오는 모든 데이터(샘플 목록/상세, 신청 현황, 내 정보)를 담당. 별도 로컬 캐시를 만들지 않고 `queryClient.invalidateQueries`로 최신화한다.
   - 샘플 신청/취소 후에는 mutation의 `onSuccess`에서 관련 쿼리만 invalidate한다(전역 리페치 금지).
 - 인증 토큰은 `authStore`에 저장하고 `httpClient` 인터셉터가 참조한다(컴포넌트가 직접 토큰을 다루지 않음).
@@ -90,7 +91,8 @@
   - **DB 접속 정보**: `DATABASE_URL` (PostgreSQL 접속 문자열: host/port/user/password/db명 포함) 형태로 한 번에 관리한다. 개별 변수(`DB_HOST`, `DB_PORT` 등)로 쪼개지 않는다.
   - **JWT 시크릿**: `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`을 access/refresh용으로 분리해서 관리한다(같은 시크릿 재사용 금지 — 하나가 유출돼도 다른 토큰까지 위조되지 않도록).
   - **토큰 만료 시간**: `JWT_ACCESS_EXPIRES_IN`(예: `1h`), `JWT_REFRESH_EXPIRES_IN`(예: `14d`)로 관리해 코드 수정 없이 정책을 조정할 수 있게 한다.
-  - 그 외: `PORT`(기본 3000), `FRONTEND_ORIGIN`(CORS 허용 origin, 프론트 개발 서버 주소).
+  - **Supabase**: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_STORAGE_BUCKET`(기본 `sample-images`) — 샘플 이미지 파일을 Supabase Storage에 업로드하기 위해 필요. 백엔드가 서버리스(Vercel)로 배포되어 로컬 디스크에 파일을 저장할 수 없기 때문에 로컬 디스크 저장 대신 이 방식을 쓴다.
+  - 그 외: `PORT`(기본 3000), `FRONTEND_ORIGIN`(CORS 허용 origin, 프론트 개발 서버/배포 주소).
 - 서버 기동 시 필수 환경변수 누락을 검증하고, 누락 시 즉시 종료한다(런타임 중 undefined로 조용히 실패하지 않게).
 - 비밀번호는 `bcrypt`(또는 Node 내장 `crypto.scrypt`) 중 하나만 선택해 해시로 저장한다. salt rounds는 라이브러리 기본값을 사용한다.
 - JWT는 access token(짧은 만료, `JWT_ACCESS_EXPIRES_IN`)과 refresh token(긴 만료, `JWT_REFRESH_EXPIRES_IN`)을 함께 사용한다. refresh token은 DB 저장 없이 stateless 검증으로 시작한다(블랙리스트/회전 로직은 MVP 범위 밖 — 필요해지면 추가).
@@ -130,18 +132,25 @@ frontend/
     │   │   ├── useApplicationQueries.ts
     │   │   ├── useApplicationMutations.ts # useApply, useCancelApply
     │   │   └── applicationApi.ts
-    │   └── mypage/
-    │       ├── MyPage.tsx
-    │       ├── useMyPageMutations.ts     # 정보수정/비밀번호변경
-    │       └── myPageApi.ts
+    │   ├── mypage/
+    │   │   ├── MyPage.tsx
+    │   │   ├── useMyPageQueries.ts       # useMe
+    │   │   ├── useMyPageMutations.ts     # 정보수정/비밀번호변경
+    │   │   └── myPageApi.ts
+    │   └── roulette/                     # (부가 기능, 원 도메인 밖 — 1-domain-definition.md 6-1절)
+    │       ├── RouletteModal.tsx         # 로그인 시 최초 1회 뜨는 회전판+STOP 모달
+    │       ├── RouletteResultModal.tsx   # nav 배지 클릭 시 결과 재조회 모달
+    │       └── RouletteWheel.tsx         # 회전판 SVG (두 모달이 공유)
     │
     ├── stores/
-    │   └── authStore.ts           # Zustand: accessToken, user(role), login/logout 액션
+    │   ├── authStore.ts           # Zustand: accessToken, user(role), login/logout 액션
+    │   └── rouletteStore.ts       # Zustand+persist: 사용자·날짜별 뽑은 개수/잔여 개수 (부가 기능)
     │
     ├── shared/
-    │   ├── components/            # Button, Input, Card, Modal 등 공용 UI
+    │   ├── components/            # Button, Input, Card, LogoutButton 등 공용 UI
     │   ├── layouts/                # AdminLayout, BuyerLayout (반응형 헤더/네브)
-    │   ├── httpClient.ts           # fetch/axios 인스턴스, 401 시 refresh 처리
+    │   ├── httpClient.ts           # fetch 래퍼, 401 시 refresh 처리, VITE_API_BASE_URL 사용
+    │   ├── formatDate.ts           # ISO 문자열에서 날짜(YYYY-MM-DD)만 추출
     │   └── types.ts                # Sample, Application, User 등 공용 타입
     │
     ├── main.tsx
@@ -158,7 +167,8 @@ backend/
 │   ├── app.js                 # Express 앱 생성, 미들웨어/라우터 조립
 │   ├── server.js              # 서버 기동(listen), graceful shutdown
 │   ├── config/
-│   │   └── env.js             # process.env 읽고 검증(누락 시 기동 실패)
+│   │   ├── env.js             # process.env 읽고 검증(누락 시 기동 실패)
+│   │   └── supabase.js        # @supabase/supabase-js 클라이언트 1개 (Storage 업로드용)
 │   ├── db/
 │   │   ├── pool.js            # pg Pool 인스턴스 1개
 │   │   └── migrations/
@@ -168,23 +178,27 @@ backend/
 │   ├── middlewares/
 │   │   ├── auth.js            # JWT access token 검증, req.user 세팅
 │   │   ├── requireRole.js      # role(ADMIN/BUYER) 체크
+│   │   ├── upload.js           # multer.memoryStorage() (디스크에 쓰지 않음)
 │   │   └── errorHandler.js    # 공통 에러 응답 포맷
 │   ├── routes/
 │   │   ├── index.js           # 라우터 등록 집합
 │   │   ├── auth.routes.js     # /auth/signup, /auth/login, /auth/refresh
 │   │   ├── samples.routes.js  # /samples (목록/상세/등록/수정), /samples/:id/applications
 │   │   ├── applications.routes.js # /applications (신청/취소/내 내역)
-│   │   └── users.routes.js    # /users/me (마이페이지)
+│   │   ├── users.routes.js    # /users/me (마이페이지)
+│   │   └── uploads.routes.js  # /uploads (샘플 이미지 업로드, 관리자 전용)
 │   ├── controllers/
 │   │   ├── auth.controller.js
 │   │   ├── samples.controller.js
 │   │   ├── applications.controller.js
-│   │   └── users.controller.js
+│   │   ├── users.controller.js
+│   │   └── uploads.controller.js
 │   ├── services/
 │   │   ├── auth.service.js        # 해시/JWT 발급, 검증 로직
 │   │   ├── samples.service.js     # 샘플 등록/수정/조회 + 기간 판정
 │   │   ├── applications.service.js # 신청/취소 트랜잭션, 유일성 보장
-│   │   └── users.service.js
+│   │   ├── users.service.js
+│   │   └── uploads.service.js     # Supabase Storage에 업로드 + 공개 URL 반환
 │   └── utils/
 │       ├── AppError.js        # 상태코드+메시지 갖는 커스텀 에러
 │       └── asyncHandler.js    # 컨트롤러 try/catch 래퍼
@@ -194,6 +208,7 @@ backend/
 │   ├── authMiddleware.test.js
 │   ├── samples.test.js
 │   ├── users.test.js
+│   ├── uploads.test.js
 │   ├── env.test.js
 │   ├── errorHandler.test.js
 │   ├── health.test.js

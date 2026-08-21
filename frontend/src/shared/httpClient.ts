@@ -1,6 +1,11 @@
 import { useAuthStore } from '../stores/authStore';
 
-const BASE_URL = 'http://localhost:3000';
+export const BASE_URL = 'http://localhost:3000';
+
+export function resolveAssetUrl(path: string | null): string | undefined {
+  if (!path) return undefined;
+  return path.startsWith('/') ? `${BASE_URL}${path}` : path;
+}
 
 let refreshPromise: Promise<string | null> | null = null;
 

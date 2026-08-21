@@ -12,7 +12,8 @@
     { "name": "auth", "description": "회원가입/로그인/토큰 재발급" },
     { "name": "samples", "description": "샘플 등록/수정/조회" },
     { "name": "applications", "description": "샘플 신청/취소/신청 현황" },
-    { "name": "users", "description": "마이페이지(내 정보/비밀번호)" }
+    { "name": "users", "description": "마이페이지(내 정보/비밀번호)" },
+    { "name": "uploads", "description": "샘플 이미지 파일 업로드" }
   ],
   "components": {
     "securitySchemes": {
@@ -560,6 +561,52 @@
           },
           "401": {
             "description": "인증되지 않음",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          }
+        }
+      }
+    },
+    "/uploads": {
+      "post": {
+        "tags": ["uploads"],
+        "summary": "샘플 이미지 파일 업로드 (관리자 전용)",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["file"],
+                "properties": {
+                  "file": { "type": "string", "format": "binary" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "업로드 성공. 반환된 url을 샘플 등록/수정 시 image_url로 사용한다.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": { "url": { "type": "string", "description": "예: /uploads/1700000000000-123456789.png" } }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "업로드할 파일이 없음",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          },
+          "401": {
+            "description": "인증되지 않음",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
+          },
+          "403": {
+            "description": "관리자 권한 없음",
             "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } }
           }
         }

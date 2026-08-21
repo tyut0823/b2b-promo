@@ -3,7 +3,8 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import Button from '../../shared/components/Button';
 import Input from '../../shared/components/Input';
 import { useSampleDetail } from './useSampleQueries';
-import { useCreateSample, useUpdateSample } from './useSampleMutations';
+import { useCreateSample, useUpdateSample, useUploadSampleImage } from './useSampleMutations';
+import { resolveAssetUrl } from '../../shared/httpClient';
 
 function SampleFormPage() {
   const { id } = useParams<{ id: string }>();
@@ -11,6 +12,7 @@ function SampleFormPage() {
   const { data } = useSampleDetail(id);
   const createMutation = useCreateSample();
   const updateMutation = useUpdateSample();
+  const uploadMutation = useUploadSampleImage();
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -29,6 +31,12 @@ function SampleFormPage() {
   }, [data]);
 
   const mutation = id ? updateMutation : createMutation;
+
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    uploadMutation.mutate(file, { onSuccess: (result) => setImageUrl(result.url) });
+  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -68,12 +76,15 @@ function SampleFormPage() {
           />
         </div>
         <div className="sample-form-row">
-          <Input
-            id="sample-image-url"
-            label="이미지 URL"
-            value={imageUrl}
-            onChange={(e) => setImageUrl(e.target.value)}
-          />
+          <div className="field">
+            <label htmlFor="sample-image-file">이미지</label>
+            <input id="sample-image-file" type="file" accept="image/*" onChange={handleFileChange} />
+            {uploadMutation.isPending && <p>업로드 중...</p>}
+            {uploadMutation.isError && (
+              <p style={{ color: 'var(--color-status-danger)' }}>{uploadMutation.error.message}</p>
+            )}
+            {imageUrl && <img src={resolveAssetUrl(imageUrl)} alt="미리보기" style={{ width: 96, height: 96, objectFit: 'cover' }} />}
+          </div>
           <Input
             id="sample-start-date"
             label="신청 시작일"
@@ -91,7 +102,7 @@ function SampleFormPage() {
             onChange={(e) => setEndDate(e.target.value)}
           />
         </div>
-        <Button type="submit" disabled={mutation.isPending}>
+        <Button type="submit" disabled={mutation.isPending || uploadMutation.isPending}>
           저장하기
         </Button>
         {mutation.isError && <p style={{ color: 'var(--color-status-danger)' }}>{mutation.error.message}</p>}

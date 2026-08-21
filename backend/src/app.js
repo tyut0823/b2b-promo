@@ -5,6 +5,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors({ origin: process.env.FRONTEND_ORIGIN || 'http://localhost:5173' }));
+app.use('/uploads', express.static(require('path').join(__dirname, '../uploads')));
 
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });

@@ -4,6 +4,7 @@ import { getStatusBadge } from './statusBadge';
 import { useMyApplications } from '../application/useApplicationQueries';
 import { useApply, useCancelApply } from '../application/useApplicationMutations';
 import Button from '../../shared/components/Button';
+import { resolveAssetUrl } from '../../shared/httpClient';
 
 function SampleDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -20,7 +21,7 @@ function SampleDetailPage() {
       {isError && <p>샘플을 찾을 수 없습니다.</p>}
       {data && (
         <div className="sample-detail">
-          <img src={data.image_url ?? undefined} alt={data.name} />
+          <img src={resolveAssetUrl(data.image_url)} alt={data.name} />
           <div>
             <h1>{data.name}</h1>
             <p>{data.description ?? ''}</p>

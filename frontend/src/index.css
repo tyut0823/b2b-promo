@@ -56,11 +56,12 @@ body {
 .card { background: #fff; border: 1px solid var(--color-border); border-radius: 8px; padding: 16px; }
 
 .nav { background: #fff; border-bottom: 1px solid var(--color-border); }
-.nav-inner { min-height: 56px; padding: 12px 0; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.nav-inner { min-height: 56px; padding-top: 12px; padding-bottom: 12px; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
 .nav-logo { font-weight: 700; color: var(--color-primary); text-decoration: none; font-size: 18px; }
 .nav-links { display: flex; flex-direction: column; gap: 8px; }
 .nav-links a { color: var(--color-text); text-decoration: none; }
 .nav-active { color: var(--color-primary); border-bottom: 2px solid var(--color-primary); }
+.nav-logout { background: none; border: none; padding: 0; font: inherit; color: var(--color-text-muted); cursor: pointer; }
 
 .sample-grid { display: flex; flex-direction: column; gap: 16px; }
 .sample-card { display: flex; gap: 12px; cursor: pointer; }
@@ -78,7 +79,7 @@ body {
 
 @media (min-width: 768px) {
   /* 768px: mobile → desktop, see docs/7-wireframe.md 2절 */
-  .nav-inner { height: 56px; padding: 0; flex-direction: row; align-items: center; justify-content: space-between; }
+  .nav-inner { height: 56px; padding-top: 0; padding-bottom: 0; flex-direction: row; align-items: center; justify-content: space-between; }
   .nav-links { flex-direction: row; gap: 24px; }
   .sample-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
   .sample-detail { flex-direction: row; align-items: flex-start; }

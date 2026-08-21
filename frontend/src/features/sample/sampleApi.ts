@@ -44,3 +44,12 @@ export async function updateSample(id: string, body: SampleInput): Promise<Sampl
   if (!res.ok) throw new Error(data.message);
   return data;
 }
+
+export async function uploadSampleImage(file: File): Promise<{ url: string }> {
+  const formData = new FormData();
+  formData.append('file', file);
+  const res = await httpClient('/uploads', { method: 'POST', body: formData });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message);
+  return data;
+}

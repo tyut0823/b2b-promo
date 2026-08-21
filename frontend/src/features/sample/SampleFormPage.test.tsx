@@ -62,9 +62,6 @@ describe('SampleFormPage', () => {
 
     fireEvent.change(screen.getByLabelText('샘플명'), { target: { value: '샘플A' } });
     fireEvent.change(screen.getByLabelText('설명'), { target: { value: '설명A' } });
-    fireEvent.change(screen.getByLabelText('이미지 URL'), {
-      target: { value: 'http://img.example.com/a.png' },
-    });
     fireEvent.change(screen.getByLabelText('신청 시작일'), { target: { value: '2026-08-01' } });
     fireEvent.change(screen.getByLabelText('신청 종료일'), { target: { value: '2026-08-20' } });
 
@@ -117,7 +114,7 @@ describe('SampleFormPage', () => {
     await waitFor(() => {
       expect(screen.getByDisplayValue('샘플A')).toBeInTheDocument();
       expect(screen.getByDisplayValue('설명A')).toBeInTheDocument();
-      expect(screen.getByDisplayValue('http://img.example.com/a.png')).toBeInTheDocument();
+      expect(screen.getByAltText('미리보기')).toHaveAttribute('src', 'http://img.example.com/a.png');
       expect(screen.getByDisplayValue('2026-08-01')).toBeInTheDocument();
       expect(screen.getByDisplayValue('2026-08-20')).toBeInTheDocument();
     });
@@ -129,6 +126,29 @@ describe('SampleFormPage', () => {
         'http://localhost:3000/samples/s1',
         expect.objectContaining({ method: 'PUT' })
       );
+    });
+  });
+
+  it('이미지 파일을 선택하면 POST /uploads가 호출되고 미리보기가 표시된다', async () => {
+    const fetchMock = globalThis.fetch as ReturnType<typeof vi.fn>;
+    fetchMock.mockImplementation((url: string, options?: RequestInit) => {
+      if (url === 'http://localhost:3000/uploads' && options?.method === 'POST') {
+        return Promise.resolve(jsonResponse(201, { url: '/uploads/test.png' }));
+      }
+      return Promise.resolve(jsonResponse(200, [sampleA]));
+    });
+
+    renderSampleFormPage('/admin/samples/new');
+
+    const file = new File(['data'], 'test.png', { type: 'image/png' });
+    fireEvent.change(screen.getByLabelText('이미지'), { target: { files: [file] } });
+
+    await waitFor(() => {
+      expect(fetchMock).toHaveBeenCalledWith(
+        'http://localhost:3000/uploads',
+        expect.objectContaining({ method: 'POST' })
+      );
+      expect(screen.getByAltText('미리보기')).toHaveAttribute('src', 'http://localhost:3000/uploads/test.png');
     });
   });
 

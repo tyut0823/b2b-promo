@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createSample, updateSample } from './sampleApi';
+import { createSample, updateSample, uploadSampleImage } from './sampleApi';
 import type { SampleInput } from './sampleApi';
 
 export function useCreateSample() {
@@ -21,4 +21,8 @@ export function useUpdateSample() {
       queryClient.invalidateQueries({ queryKey: ['samples', vars.id] });
     },
   });
+}
+
+export function useUploadSampleImage() {
+  return useMutation({ mutationFn: uploadSampleImage });
 }

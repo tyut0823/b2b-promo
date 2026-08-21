@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import Card from '../../shared/components/Card';
 import { useSampleList } from './useSampleQueries';
 import { getStatusBadge } from './statusBadge';
+import { resolveAssetUrl } from '../../shared/httpClient';
 
 function SampleListPage() {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ function SampleListPage() {
         const badge = getStatusBadge(s.status);
         return (
           <Card key={s.id} className="sample-card" onClick={() => navigate(`/samples/${s.id}`)}>
-            <img src={s.image_url ?? undefined} alt={s.name} />
+            <img src={resolveAssetUrl(s.image_url)} alt={s.name} />
             <div>
               <h2>{s.name}</h2>
               <p>

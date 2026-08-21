@@ -6,5 +6,6 @@ router.use('/auth', authRoutes);
 router.use('/samples', require('./samples.routes'));
 router.use('/applications', require('./applications.routes'));
 router.use('/users', require('./users.routes'));
+router.use('/uploads', require('./uploads.routes'));
 
 module.exports = router;

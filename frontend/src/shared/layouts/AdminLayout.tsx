@@ -1,4 +1,5 @@
 import { Link, NavLink, Outlet } from 'react-router-dom';
+import LogoutButton from '../components/LogoutButton';
 
 function AdminLayout() {
   return (
@@ -9,6 +10,7 @@ function AdminLayout() {
           <nav className="nav-links">
             <NavLink to="/admin/samples" className={({ isActive }) => (isActive ? 'nav-active' : '')}>샘플 관리</NavLink>
             <NavLink to="/mypage" className={({ isActive }) => (isActive ? 'nav-active' : '')}>마이페이지</NavLink>
+            <LogoutButton />
           </nav>
         </div>
       </header>
